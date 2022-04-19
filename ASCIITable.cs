@@ -33,7 +33,6 @@ public class ASCIITable
 
     private string GenContent()
     {
-
         string content = "";
         for (int i = 0; i < lines.Count; i++)
         {
@@ -147,8 +146,6 @@ public class ASCIITable
         return longestStringLength;
     }
 
-    private int CalcLongest(int first, int second)
-    {
-        return (second < first ? first : second);
-    }
+    private int CalcLongest(int first, int second) => (second < first ? first : second);
+    
 }

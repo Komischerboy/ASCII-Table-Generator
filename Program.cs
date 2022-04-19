@@ -15,8 +15,8 @@ class Program
             new string[] { " 3 ", " Wilda ", " Simon " }
         };
                                                            
-        var Table = new ASCIITable(lines);
-        Console.WriteLine(Table.GetAsString());
+        var table = new ASCIITable(lines);
+        Console.WriteLine(table.GetAsString());
     }
 }
 
