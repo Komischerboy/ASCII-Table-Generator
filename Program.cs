@@ -1,23 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace ASCII_Raw
+namespace ASCII_Raw;
+
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
+        var lines = new List<string[]>
         {
-            List<string[]> lines = new List<string[]>();
-            string[] rows = { " id ", " name ", " surename " };
-            string[] line1 = { " 1 ", " George ", " Gross " };
-            string[] line2 = { " 2 ", " Edie ", " Kirk " };
-            string[] line3 = { " 3 ", " Wilda ", " Simon " };
-            lines.Add(rows);
-            lines.Add(line1);
-            lines.Add(line2);
-            lines.Add(line3);
-
-            ASCIITable table = new ASCIITable(lines);
-            System.Console.WriteLine(table.GetAsString());
-        }
+            new string[] { " id ", " name ", " surename " },
+            new string[] { " 1 ", " George ", " Gross " },
+            new string[] { " 2 ", " Edie ", " Kirk " },
+            new string[] { " 3 ", " Wilda ", " Simon " }
+        };
+                                                           
+        var Table = new ASCIITable(lines);
+        Console.WriteLine(Table.GetAsString());
     }
 }
+
