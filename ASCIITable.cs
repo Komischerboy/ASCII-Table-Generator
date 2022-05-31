@@ -6,15 +6,15 @@ namespace ASCII_Raw;
 
 public class ASCIITable
 {
-    private string[] rows;
-    private List<string[]> lines;
+    private readonly string[] rows;
+    private readonly List<string[]> lines;
 
     private int longestStringLength;
 
     public ASCIITable(List<string[]> table) {
-        this.rows = table.First();
-        table.Remove(this.rows);            
-        this.lines = table;
+        rows = table.First();
+        table.Remove(rows);            
+        lines = table;
     }
 
     public ASCIITable(string[] rows, List<string[]> lines)
@@ -25,29 +25,23 @@ public class ASCIITable
 
     public string GetAsString()
     {
-        string table;
-        table = GenHeader() + "\n";
+        var table = GenHeader() + "\n";
         table += GenContent() + "\n";
         return table;
     }
 
     private string GenContent()
     {
-        string content = "";
-        for (int i = 0; i < lines.Count; i++)
-        {
-            content += GenLine(lines[i]) + "\n";
-        }
-
+        var content = lines.Aggregate("", (current, t) => current + (GenLine(t) + "\n"));
         return content + GenBodyFooter();
     }
 
     private string GenBodyFooter()
     {
-        string footer = "└";
+        var footer = "└";
         foreach (var content in rows)
         {
-            for (int i = 0; i < GenLongestStringLength(content); i++)
+            for (var i = 0; i < GenLongestStringLength(content); i++)
             {
                 footer += "─";
             }
@@ -59,15 +53,15 @@ public class ASCIITable
 
     private string GenHeader()
     {
-        string header = "";
+        var header = "";
 
-        string top = "┌";
-        string middle = "";
-        string bottom = "├";
+        var top = "┌";
+        var middle = "";
+        var bottom = "├";
 
         foreach (var content in rows)
         {
-            for (int i = 0; i < GenLongestStringLength(content); i++)
+            for (var i = 0; i < GenLongestStringLength(content); i++)
             {
                 top += "─";
                 bottom += "─";
@@ -87,27 +81,27 @@ public class ASCIITable
 
     private string GenMiddle()
     {
-        string middle = "";
+        var middle = "";
         middle += GenLine(rows);
         return middle;
     }
 
     private string GenLine(string[] contents)
     {
-        string finalLine = "│";
+        var finalLine = "│";
 
-        for (int i = 0; i < contents.Length; i++)
+        for (var i = 0; i < contents.Length; i++)
         {
-            int longestStringLength = GenLongestStringLength(rows[i]); // contents.Length = rows.Length
-            string content = contents[i];
-            string line = content;
+            var longestStringLength = GenLongestStringLength(rows[i]); // contents.Length = rows.Length
+            var content = contents[i];
+            var line = content;
 
             float space = longestStringLength - content.ToCharArray().Length;
-            bool isEven = space % 2 == 0;
+            var isEven = space % 2 == 0;
 
             if (isEven)
             {
-                for (int i2 = 0; i2 < space / 2; i2++)
+                for (var i2 = 0; i2 < space / 2; i2++)
                 {
                     line = line.Insert(0, " ");
                     line += " ";
