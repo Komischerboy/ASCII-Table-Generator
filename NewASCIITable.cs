@@ -8,18 +8,12 @@ public class NewASCIITable
 {
     private readonly List<string[]> table;
 
-    public NewASCIITable(List<string[]> table)
-    {
-        this.table = table;
-    }
+    public NewASCIITable(List<string[]> table) => this.table = table;
 
     public override string ToString() => GenTable();
 
     private string GenTable()
     {
-        var Header = new StringBuilder();
-        Header.Append("┌");
-
         //get full length of table
         var TableLength = 0;
         table.ForEach(Line =>
@@ -27,10 +21,9 @@ public class NewASCIITable
             var LongestDataLength = Line.Select(x => x.Length).Sum();
             if (TableLength < LongestDataLength) TableLength = LongestDataLength;
         });
-        TableLength += table.OrderByDescending(x => x.Length).First().Length + 1; //add space beause of │ seperators
 
-        //Header.Append('─', TableLength);
-        //Header.Append("┐");
+        var Header = new StringBuilder();
+        Header.Append("┌");
         Header.AppendLine();
 
         var ColumnSpacer = new List<int>();
@@ -54,7 +47,7 @@ public class NewASCIITable
 
             Header.AppendLine();
             Header.Append(Line == table.Last() ? "└" : "├");
-            
+
             ColumnSpacer.ForEach(length =>
             {
                 Header.Append('─', length);
@@ -66,14 +59,14 @@ public class NewASCIITable
             Header.AppendLine();
         }
 
-        ColumnSpacer.ForEach(length =>
+        for (var i = 0; i < ColumnSpacer.Count; i++)
         {
+            var length = ColumnSpacer[i];
             Header.Insert(1, "─", length);
-            Header.Insert(length + 1, "┬");
-        });
+            if (i > 0) Header.Insert(length + 1, "┬");
+        }
 
         Header.Insert(ColumnSpacer.Sum() + ColumnSpacer.Count, "┐");
-
         return Header.ToString();
     }
 }
