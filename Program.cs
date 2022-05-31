@@ -9,14 +9,14 @@ internal class Program
     {
         var lines = new List<string[]>
         {
-            new[] { " id ", " name ", " surename " },
+            new[] { " serverid ", " name ", " surename " },
             new[] { " 1 ", " George ", " Gross " },
             new[] { " 2 ", " Edie ", " Kirk " },
             new[] { " 3 ", " Wilda ", " Simon " }
         };
                                                            
-        var table = new ASCIITable(lines);
-        Console.WriteLine(table.GetAsString());
+        var table = new NewASCIITable(lines);
+        Console.WriteLine(table.ToString());
     }
 }
 
