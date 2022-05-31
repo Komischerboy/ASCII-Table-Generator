@@ -13,9 +13,9 @@ public class NewASCIITable
         this.table = table;
     }
 
-    public override string ToString() => GenHeader();
+    public override string ToString() => GenTable();
 
-    private string GenHeader()
+    private string GenTable()
     {
         var Header = new StringBuilder();
         Header.Append("┌");
@@ -29,10 +29,11 @@ public class NewASCIITable
         });
         TableLength += table.OrderByDescending(x => x.Length).First().Length + 1; //add space beause of │ seperators
 
-        Header.Append('─', TableLength);
-        Header.Append("┐");
+        //Header.Append('─', TableLength);
+        //Header.Append("┐");
         Header.AppendLine();
 
+        var ColumnSpacer = new List<int>();
         foreach (var Line in table)
         {
             Header.Append("│");
@@ -44,6 +45,7 @@ public class NewASCIITable
 
                 //center datas
                 var LongestColumnLength = ColumnList.OrderByDescending(x => x.Length).First().Length;
+                if (ColumnSpacer.Count - 1 < Line.Length - 1) ColumnSpacer.Add(LongestColumnLength);
                 var PadLeft = (LongestColumnLength - Data.Length) / 2 + Data.Length;
 
                 Header.Append(Data.PadLeft(PadLeft).PadRight(LongestColumnLength));
@@ -51,10 +53,26 @@ public class NewASCIITable
             }
 
             Header.AppendLine();
+            Header.Append(Line == table.Last() ? "└" : "├");
+            
+            ColumnSpacer.ForEach(length =>
+            {
+                Header.Append('─', length);
+                Header.Append(Line == table.Last() ? "┴" : "┼");
+            });
+
+            Header.Length--; //remove last char=> because we want to use ┘ as end
+            Header.Append(Line == table.Last() ? "┘" : "┤");
+            Header.AppendLine();
         }
-        Header.Append("└");
-        Header.Append('─', TableLength);
-        Header.Append("┘");
+
+        ColumnSpacer.ForEach(length =>
+        {
+            Header.Insert(1, "─", length);
+            Header.Insert(length + 1, "┬");
+        });
+
+        Header.Insert(ColumnSpacer.Sum() + ColumnSpacer.Count, "┐");
 
         return Header.ToString();
     }
