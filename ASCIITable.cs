@@ -1,145 +1,73 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
-namespace ASCII_Raw;
+namespace ASCII_Table;
 
 public class ASCIITable
 {
-    private readonly string[] rows;
-    private readonly List<string[]> lines;
+    private readonly List<string[]> table;
 
-    private int longestStringLength;
+    public ASCIITable(List<string[]> table) => this.table = table;
 
-    public ASCIITable(List<string[]> table) {
-        rows = table.First();
-        table.Remove(rows);            
-        lines = table;
-    }
+    public override string ToString() => GenTable();
 
-    public ASCIITable(string[] rows, List<string[]> lines)
+    private string GenTable()
     {
-        this.rows = rows;
-        this.lines = lines;
-    }
-
-    public string GetAsString()
-    {
-        var table = GenHeader() + "\n";
-        table += GenContent() + "\n";
-        return table;
-    }
-
-    private string GenContent()
-    {
-        var content = lines.Aggregate("", (current, t) => current + (GenLine(t) + "\n"));
-        return content + GenBodyFooter();
-    }
-
-    private string GenBodyFooter()
-    {
-        var footer = "└";
-        foreach (var content in rows)
+        //get full length of table
+        var TableLength = 0;
+        table.ForEach(Line =>
         {
-            for (var i = 0; i < GenLongestStringLength(content); i++)
-            {
-                footer += "─";
-            }
-            footer += "┴";
-        }
-        footer = footer.Remove(footer.ToCharArray().Length - 1) + "┘";
-        return footer;
-    }
+            var LongestDataLength = Line.Select(x => x.Length).Sum();
+            if (TableLength < LongestDataLength) TableLength = LongestDataLength;
+        });
 
-    private string GenHeader()
-    {
-        var header = "";
+        var Header = new StringBuilder();
+        Header.Append("┌");
+        Header.AppendLine();
 
-        var top = "┌";
-        var middle = "";
-        var bottom = "├";
-
-        foreach (var content in rows)
+        var ColumnSpacer = new List<int>();
+        foreach (var Line in table)
         {
-            for (var i = 0; i < GenLongestStringLength(content); i++)
+            Header.Append("│");
+
+            for (var i = 0; i < Line.Length; i++)
             {
-                top += "─";
-                bottom += "─";
-            }
-            top += "┬";
-            bottom += "┼";
-        }
-        top = top.Remove(top.ToCharArray().Length - 1) + "┐";
-        bottom = bottom.Remove(bottom.ToCharArray().Length - 1) + "┤";
-        middle = GenMiddle();
+                var Data = Line[i];
+                var ColumnList = table.Select(x => x[i]).ToList();
 
+                //center datas
+                var LongestColumnLength = ColumnList.OrderByDescending(x => x.Length).First().Length;
+                if (ColumnSpacer.Count - 1 < Line.Length - 1) ColumnSpacer.Add(LongestColumnLength);
+                var PadLeft = (LongestColumnLength - Data.Length) / 2 + Data.Length;
 
-        header = top + "\n" + middle + "\n" + bottom;
-
-        return header;
-    }
-
-    private string GenMiddle()
-    {
-        var middle = "";
-        middle += GenLine(rows);
-        return middle;
-    }
-
-    private string GenLine(string[] contents)
-    {
-        var finalLine = "│";
-
-        for (var i = 0; i < contents.Length; i++)
-        {
-            var longestStringLength = GenLongestStringLength(rows[i]); // contents.Length = rows.Length
-            var content = contents[i];
-            var line = content;
-
-            float space = longestStringLength - content.ToCharArray().Length;
-            var isEven = space % 2 == 0;
-
-            if (isEven)
-            {
-                for (var i2 = 0; i2 < space / 2; i2++)
-                {
-                    line = line.Insert(0, " ");
-                    line += " ";
-                }
-            }
-            else
-            {
-                for (int i2 = 0; i2 < Math.Floor(space / 2); i2++)
-                {
-                    line = line.Insert(0, " ");
-                }
-                for (int i3 = 0; i3 < Math.Floor(space / 2) + 1; i3++)
-                {
-                    line += " ";
-                }
+                Header.Append(Data.PadLeft(PadLeft).PadRight(LongestColumnLength));
+                Header.Append("│");
             }
 
-            line += "│";
-            finalLine += line;
+            Header.AppendLine();
+            Header.Append(Line == table.Last() ? "└" : "├");
+
+            ColumnSpacer.ForEach(length =>
+            {
+                Header.Append('─', length);
+                Header.Append(Line == table.Last() ? "┴" : "┼");
+            });
+
+            Header.Length--; //remove last char=> because we want to use ┘ as end
+            Header.Append(Line == table.Last() ? "┘" : "┤");
+            Header.AppendLine();
         }
 
-        return finalLine;
-    }
-
-    private int GenLongestStringLength(string content)
-    {
-        List<string> LineList = new List<string>();
-        foreach (var line in lines)
+        //Todo: Fix Bug
+        for (var i = 0; i < ColumnSpacer.Count; i++)
         {
-            var longestline = line.OrderByDescending(s => s.Length).First();
-            LineList.Add(longestline);
+            var length = ColumnSpacer[i];
+            Header.Insert(1, "─", length);
+            if (i > 0) Header.Insert(length + 1, "┬");
         }
-        string[] longest = LineList.ToArray();
 
-        longestStringLength = CalcLongest(content.ToCharArray().Length, longest.OrderByDescending(s => s.Length).First().ToCharArray().Length);
-        return longestStringLength;
+        Header.Insert(ColumnSpacer.Sum() + ColumnSpacer.Count, "┐");
+        return Header.ToString();
     }
-
-    private int CalcLongest(int first, int second) => (second < first ? first : second);
-    
 }
