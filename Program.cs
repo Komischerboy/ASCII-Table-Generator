@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace ASCII_Raw;
 
-class Program
+internal class Program
 {
-    static void Main(string[] args)
+    private static void Main()
     {
         var lines = new List<string[]>
         {
-            new string[] { " id ", " name ", " surename " },
-            new string[] { " 1 ", " George ", " Gross " },
-            new string[] { " 2 ", " Edie ", " Kirk " },
-            new string[] { " 3 ", " Wilda ", " Simon " }
+            new[] { " id ", " name ", " surename " },
+            new[] { " 1 ", " George ", " Gross " },
+            new[] { " 2 ", " Edie ", " Kirk " },
+            new[] { " 3 ", " Wilda ", " Simon " }
         };
                                                            
         var table = new ASCIITable(lines);
