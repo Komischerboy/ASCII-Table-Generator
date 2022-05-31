@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ASCII_Raw;
+namespace ASCII_Table;
 
 internal class Program
 {
     private static void Main()
     {
-        var lines = new List<string[]>
+        var Lines = new List<string[]>
         {
-            new[] { " serverid ", " name ", " surename " },
-            new[] { " 1 ", " George ", " Gross " },
-            new[] { " 2 ", " Edie ", " Kirk " },
-            new[] { " 3 ", " Wilda ", " Simon " }
+            new[] { " serverid ", " roleid ", " permissions " },
+            new[] { " 829364130317336666 ", " Geo848176387029991434", " 8749823749284 " }
         };
-                                                           
-        var table = new NewASCIITable(lines);
-        Console.WriteLine(table.ToString());
+        
+        Console.WriteLine(new ASCIITable(Lines));
     }
 }
 
