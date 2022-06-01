@@ -54,17 +54,19 @@ public class ASCIITable
                 Header.Append(Line == table.Last() ? "┴" : "┼");
             });
 
-            Header.Length--; //remove last char=> because we want to use ┘ as end
+            Header.Length--; //remove last char => because we want to use ┘ as end
             Header.Append(Line == table.Last() ? "┘" : "┤");
             Header.AppendLine();
         }
 
-        //Todo: Fix Bug
+        //Header
+        var FullLength = 0;
         for (var i = 0; i < ColumnSpacer.Count; i++)
         {
             var length = ColumnSpacer[i];
+            FullLength += length;
             Header.Insert(1, "─", length);
-            if (i > 0) Header.Insert(length + 1, "┬");
+            if (i > 0) Header.Insert(FullLength + 1, "┬");
         }
 
         Header.Insert(ColumnSpacer.Sum() + ColumnSpacer.Count, "┐");
