@@ -60,13 +60,14 @@ public class ASCIITable
         }
 
         //Header
-        var FullLength = 0;
+        var FullLength = 1;
         for (var i = 0; i < ColumnSpacer.Count; i++)
         {
-            var length = ColumnSpacer[i];
-            FullLength += length;
-            Header.Insert(1, "─", length);
-            if (i > 0) Header.Insert(FullLength + 1, "┬");
+            var SpacerPos = ColumnSpacer[i];
+            Header.Insert(FullLength, "─",  SpacerPos);
+            FullLength += SpacerPos;
+            if (i != ColumnSpacer.Count - 1) Header.Insert(FullLength, "┬");
+            FullLength++;
         }
 
         Header.Insert(ColumnSpacer.Sum() + ColumnSpacer.Count, "┐");
