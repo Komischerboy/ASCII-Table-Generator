@@ -6,9 +6,9 @@ namespace ASCII_Table;
 
 public class ASCIITable
 {
-    private readonly List<string[]> table;
+    private readonly List<string[]> Lines;
 
-    public ASCIITable(List<string[]> table) => this.table = table;
+    public ASCIITable(List<string[]> Lines) => this.Lines = Lines;
 
     public override string ToString() => GenTable();
 
@@ -16,47 +16,47 @@ public class ASCIITable
     {
         //get full length of table
         var TableLength = 0;
-        table.ForEach(Line =>
+        Lines.ForEach(Line =>
         {
             var LongestDataLength = Line.Select(x => x.Length).Sum();
             if (TableLength < LongestDataLength) TableLength = LongestDataLength;
         });
 
-        var Header = new StringBuilder();
-        Header.Append("┌");
-        Header.AppendLine();
+        var Table = new StringBuilder();
+        Table.Append("┌");
+        Table.AppendLine();
 
         var ColumnSpacer = new List<int>();
-        foreach (var Line in table)
+        foreach (var Line in Lines)
         {
-            Header.Append("│");
+            Table.Append("│");
 
             for (var i = 0; i < Line.Length; i++)
             {
                 var Data = Line[i];
-                var ColumnList = table.Select(x => x[i]).ToList();
+                var ColumnList = Lines.Select(x => x[i]).ToList();
 
                 //center datas
                 var LongestColumnLength = ColumnList.OrderByDescending(x => x.Length).First().Length;
                 if (ColumnSpacer.Count - 1 < Line.Length - 1) ColumnSpacer.Add(LongestColumnLength);
                 var PadLeft = (LongestColumnLength - Data.Length) / 2 + Data.Length;
 
-                Header.Append(Data.PadLeft(PadLeft).PadRight(LongestColumnLength));
-                Header.Append("│");
+                Table.Append(Data.PadLeft(PadLeft).PadRight(LongestColumnLength));
+                Table.Append("│");
             }
 
-            Header.AppendLine();
-            Header.Append(Line == table.Last() ? "└" : "├");
+            Table.AppendLine();
+            Table.Append(Line == Lines.Last() ? "└" : "├");
 
             ColumnSpacer.ForEach(length =>
             {
-                Header.Append('─', length);
-                Header.Append(Line == table.Last() ? "┴" : "┼");
+                Table.Append('─', length);
+                Table.Append(Line == Lines.Last() ? "┴" : "┼");
             });
 
-            Header.Length--; //remove last char => because we want to use ┘ as end
-            Header.Append(Line == table.Last() ? "┘" : "┤");
-            Header.AppendLine();
+            Table.Length--; //remove last char => because we want to use ┘ as end
+            Table.Append(Line == Lines.Last() ? "┘" : "┤");
+            Table.AppendLine();
         }
 
         //Header
@@ -64,13 +64,13 @@ public class ASCIITable
         for (var i = 0; i < ColumnSpacer.Count; i++)
         {
             var SpacerPos = ColumnSpacer[i];
-            Header.Insert(FullLength, "─",  SpacerPos);
+            Table.Insert(FullLength, "─",  SpacerPos);
             FullLength += SpacerPos;
-            if (i != ColumnSpacer.Count - 1) Header.Insert(FullLength, "┬");
+            if (i != ColumnSpacer.Count - 1) Table.Insert(FullLength, "┬");
             FullLength++;
         }
 
-        Header.Insert(ColumnSpacer.Sum() + ColumnSpacer.Count, "┐");
-        return Header.ToString();
+        Table.Insert(ColumnSpacer.Sum() + ColumnSpacer.Count, "┐");
+        return Table.ToString();
     }
 }
