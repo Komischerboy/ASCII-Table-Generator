@@ -1,5 +1,5 @@
 # ASCII-Table-Generator
-With this class you can simply create ASCII-tables like:
+With this class you can simply create ASCII-Tables like:
 
 ```
 ┌────────────────────┬────────────────────┬────────────────────┐
